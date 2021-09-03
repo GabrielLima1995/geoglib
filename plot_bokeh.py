@@ -56,7 +56,7 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
 
 def geo_line(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                line_alpha=None,line_width=None,line_color=None,cmp = False,ax =False,tile = True,
-               cmp_scale = None,cmp_min=None,cmp_max=None):
+               cmp_scale = None,cmp_min=None,cmp_max=None,cmp_factors=None,categorical_palette=None):
 
     if tile: 
       tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
@@ -85,14 +85,22 @@ def geo_line(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette
             from bokeh.models import LinearColorMapper
             color_mapper = LinearColorMapper(palette = palette_name , low = cmp_min,
                                              high = cmp_max)
+            color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
+                                 label_standoff=15)
+            p.add_layout(color_bar, 'left')
+            
+        elif cmp_scale == 'categorical':
+            from bokeh.models import CategoricalColorMapper
+            color_mapper = CategoricalColorMapper(factors = cmp_factors,palette = categorical_palette )
+            
         else:
             from bokeh.models import LogColorMapper
             color_mapper = LogColorMapper(palette = palette_name , low = cmp_min,
                                              high = cmp_max)
-            
-        color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
+            color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
                                  label_standoff=15)
-        p.add_layout(color_bar, 'left')
+            p.add_layout(color_bar, 'left')
+            
         p.multi_line(source=lines,line_width=line_width, line_color={'field' :cmp_colum, 'transform': color_mapper},\
                     alpha=line_alpha)
     else :
