@@ -93,10 +93,9 @@ def geo_line(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette
         color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
                                  label_standoff=15)
         p.add_layout(color_bar, 'left')
-        p.MultiLine(source=lines,line_width=line_width, line_color={'field' :cmp_colum, 'transform': color_mapper},\
+        p.multi_line(source=lines,line_width=line_width, line_color={'field' :cmp_colum, 'transform': color_mapper},\
                     alpha=line_alpha)
     else :
-        p.MultiLine(source=lines,line_width=line_width, line_color=line_color, line_alpha=line_alpha)
+        p.multi_line(source=lines,line_width=line_width, line_color=line_color, line_alpha=line_alpha)
 
     return p
-
