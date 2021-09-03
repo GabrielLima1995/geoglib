@@ -9,7 +9,8 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
     curdoc().theme = theme
 
 def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
-               alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True):
+               alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
+               cmp_scale = None,cmp_min=None,cmp_max=None):
 
     if tile: 
       tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
@@ -18,7 +19,7 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
     
     from bokeh.plotting import figure
     from bokeh.models import GeoJSONDataSource,ColumnDataSource,ColorBar,\
-    BasicTicker,LinearColorMapper,WMTSTileSource
+    BasicTicker,WMTSTileSource
 
     circles = GeoJSONDataSource(geojson=geodataframe.to_json())
     tile_options = WMTSTileSource(**tile)
@@ -27,8 +28,22 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
     p.axis.visible = ax
     
     if cmp:
-        color_mapper = LinearColorMapper(palette = palette_name , low = geodataframe[cmp_colum].min(),
-                                 high = geodataframe[cmp_colum].max())
+        
+        if cmp_min is None:
+            cmp_min = geodataframe[cmp_colum].min()
+        
+        if cmp_max is None:
+            cmp_max = geodataframe[cmp_colum].max()
+
+        if cmp_scale == 'linear':
+            from bokeh.models import LinearColorMapper
+            color_mapper = LinearColorMapper(palette = palette_name , low = cmp_min,
+                                             high = cmp_max)
+        else:
+            from bokeh.models import LogColorMapper
+            color_mapper = LogColorMapper(palette = palette_name , low = cmp_min,
+                                             high = cmp_max)
+            
         color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
                                  label_standoff=15)
         p.add_layout(color_bar, 'left')
