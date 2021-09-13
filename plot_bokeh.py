@@ -10,10 +10,13 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
 
 def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
-               cmp_scale = None,cmp_min=None,cmp_max=None):
+               cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark'):
 
     if tile: 
-      tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
+        if tile_name =='dark':
+            tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
+        else:
+            tile = {'url':'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'}
     else:
       tile ={}
     
