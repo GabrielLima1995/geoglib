@@ -16,7 +16,7 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
         if tile_name =='dark':
             tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
         else:
-            tile = {'url':'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'}
+            tile = {'url':'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'}
     else:
       tile ={}
     
