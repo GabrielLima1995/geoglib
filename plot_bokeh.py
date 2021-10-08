@@ -10,7 +10,8 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
 
 def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
-               cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark'):
+               cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark',cmp_factors=None,
+               categorical_palette=None):
 
     if tile: 
         if tile_name =='dark':
@@ -42,14 +43,23 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
             from bokeh.models import LinearColorMapper
             color_mapper = LinearColorMapper(palette = palette_name , low = cmp_min,
                                              high = cmp_max)
+            color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
+                                 label_standoff=15)
+            p.add_layout(color_bar, 'left')
+
+        elif cmp_scale == 'categorical':
+            from bokeh.models import CategoricalColorMapper
+            color_mapper = CategoricalColorMapper(factors = cmp_factors,palette = categorical_palette )
+
         else:
             from bokeh.models import LogColorMapper
             color_mapper = LogColorMapper(palette = palette_name , low = cmp_min,
                                              high = cmp_max)
             
-        color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
+            color_bar = ColorBar(color_mapper=color_mapper, ticker=BasicTicker(),location=(0,0),
                                  label_standoff=15)
-        p.add_layout(color_bar, 'left')
+            p.add_layout(color_bar, 'left')
+            
         p.circle(source=circles,size=circle_size, color={'field' :cmp_colum, 'transform': color_mapper}, alpha=alpha)
     else :
         p.circle(source=circles,size=circle_size, color=circle_color, alpha=alpha)
