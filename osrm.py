@@ -5,7 +5,7 @@ def Match(geodataframe,geometry,base_url=None,version='v1',profile='car'):
   from shapely.geometry import Point
 
   string = geodataframe[geometry].apply(lambda w : '{},{};'.format(w.x,w.y)).to_string(header=False,index=False).\
-           replace('\n ','').replace(' ','')
+           replace('\n','').lstrip().replace(' ','')
   
   request_return  = requests.get('{}/match/{}/{}/{}'.format(base_url,version,profile,string[:-1])).json()['waypoints']
 
@@ -29,7 +29,7 @@ def Route(geodataframe,geometry,base_url=None,version='v1',profile='car'):
   from shapely.geometry import Point
 
   string = geodataframe[geometry].apply(lambda w : '{},{};'.format(w.x,w.y)).to_string(header=False,index=False).\
-           replace('\n ','').replace(' ','')
+           replace('\n','').lstrip().replace(' ','')
   
   request_return  = requests.get('{}/route/{}/{}/{}'.format(base_url,version,profile,string[:-1])).json()['waypoints']
 
