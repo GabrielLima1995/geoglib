@@ -11,7 +11,7 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
 def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
                cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark',cmp_factors=None,
-               categorical_palette=None):
+               categorical_palette=None,fig = None):
 
     if tile: 
         if tile_name =='dark':
@@ -27,10 +27,16 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
 
     circles = GeoJSONDataSource(geojson=geodataframe.to_json())
     tile_options = WMTSTileSource(**tile)
-    p = figure(title=title,plot_width=w, plot_height=h,tooltips=hovertool)
-    p.add_tile(tile_options)
-    p.axis.visible = ax
-    
+
+    if fig is None:
+        
+        p = figure(title=title,plot_width=w, plot_height=h,tooltips=hovertool)
+        p.add_tile(tile_options)
+        p.axis.visible = ax
+
+    else:
+        p = fig
+
     if cmp:
         
         if cmp_min is None:
@@ -65,7 +71,6 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
         p.circle(source=circles,size=circle_size, color=circle_color, alpha=alpha)
 
     return p
-
 
 def geo_line(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                line_alpha=None,line_width=None,line_color=None,cmp = False,ax =False,tile = True,
