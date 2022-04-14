@@ -11,11 +11,14 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
 def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
                cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark',cmp_factors=None,
-               categorical_palette=None,fig = None):
+               categorical_palette=None,fig = None,fig_rangex=None,fig_rangey=None,
+               toolbar_location='right'):
 
     if tile: 
         if tile_name =='dark':
             tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
+        elif tile_name =='light':
+            tile = {'url':'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'}
         else:
             tile = {'url':'https://tiles.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'}
     else:
@@ -30,7 +33,8 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
 
     if fig is None:
         
-        p = figure(title=title,plot_width=w, plot_height=h,tooltips=hovertool)
+        p = figure(title=title,plot_width=w, plot_height=h,tooltips=hovertool,x_range=fig_rangex,
+                   y_range=fig_rangey,toolbar_location =toolbar_location)
         p.add_tile(tile_options)
         p.axis.visible = ax
 
