@@ -8,7 +8,7 @@ def _initialize(theme = 'dark_minimal',jupyter=True):
     
     curdoc().theme = theme
 
-def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
+def geo_circle(geodataframe,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                alpha=None,circle_size=None,circle_color=None,cmp = False,ax =False,tile = True,
                cmp_scale = None,cmp_min=None,cmp_max=None,tile_name = 'dark',cmp_factors=None,
                categorical_palette=None,fig = None,fig_rangex=None,fig_rangey=None,
@@ -19,13 +19,15 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
             tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
         elif tile_name =='light':
             tile = {'url':'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'}
+        elif tile_name =='standard_osm':
+            tile = {'url':'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'}
         else:
             tile = {'url':'https://tiles.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'}
     else:
       tile ={}
     
     from bokeh.plotting import figure
-    from bokeh.models import GeoJSONDataSource,ColumnDataSource,ColorBar,\
+    from bokeh.models import GeoJSONDataSource,ColorBar,\
     BasicTicker,WMTSTileSource
 
     circles = GeoJSONDataSource(geojson=geodataframe.to_json())
@@ -37,6 +39,8 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
                    y_range=fig_rangey,toolbar_location =toolbar_location)
         p.add_tile(tile_options)
         p.axis.visible = ax
+        p.xgrid.grid_line_color = None
+        p.ygrid.grid_line_color = None
 
     else:
         p = fig
@@ -76,6 +80,45 @@ def geo_circle(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palet
 
     return p
 
+def geo_image(geodataframe ,title,w ,h ,hovertool=None,ax =False,
+               tile = True,fig_w=5,fig_h=5,fig_anchor='center',
+               tile_name = 'dark',fig = None,fig_rangex=None,fig_rangey=None,
+               toolbar_location='right'):
+
+    if tile: 
+        if tile_name =='dark':
+            tile = {'url':'https://tiles.basemaps.cartocdn.com/dark_all/{Z}/{X}/{Y}@2x.png'}
+        elif tile_name =='light':
+            tile = {'url':'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'}
+        elif tile_name =='standard_osm':
+            tile = {'url':'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'}
+        else:
+            tile = {'url':'https://tiles.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'}
+    else:
+      tile ={}
+    
+    from bokeh.plotting import figure
+    from bokeh.models import GeoJSONDataSource,WMTSTileSource
+
+    points = GeoJSONDataSource(geojson=geodataframe.to_json())
+    tile_options = WMTSTileSource(**tile)
+
+    if fig is None:
+        
+        p = figure(title=title,plot_width=w, plot_height=h,tooltips=hovertool,x_range=fig_rangex,
+                   y_range=fig_rangey,toolbar_location =toolbar_location)
+        p.add_tile(tile_options)
+        p.axis.visible = ax
+        p.xgrid.grid_line_color = None
+        p.ygrid.grid_line_color = None
+
+    else:
+        p = fig
+
+    p.image_url(source = points,w=fig_w,h=fig_h,anchor=fig_anchor)
+
+    return p
+    
 def geo_line(geodataframe ,title,w ,h ,hovertool=None, cmp_colum = None ,palette_name = None,
                line_alpha=None,line_width=None,line_color=None,cmp = False,ax =False,tile = True,
                cmp_scale = None,cmp_min=None,cmp_max=None,cmp_factors=None,categorical_palette=None):
